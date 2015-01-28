@@ -14,7 +14,7 @@ class MeterDaemon(Daemon):
                 self.logger = logging.getLogger(__name__)
                 self.logger.setLevel(logging.INFO)
                 ##create a file handler
-                handler = logging.FileHandler('/var/log/hello.log')
+                handler = logging.FileHandler('/var/log/meterd.log')
                 handler.setLevel(logging.INFO)
                 ##create a logging format
                 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
