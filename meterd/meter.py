@@ -1,32 +1,38 @@
 #!/usr/bin/python
-import sys, serial, re, time, logging
+import sys
+import serial
+import re
+import time
+import logging
 from reading import Reading
+
 
 class Meter(object):
 
     class MeterReadngException(Exception):
         def __init__(self, msg):
             self.msg = msg
+
         def __str__(self):
             return self.msg
 
-    #Constructors
+    '''Constructors'''
     def __init__(self, port='/dev/ttyUSB0', baud=57600,
                  timeout=10, uid=None, unit='w', logger=None):
-        #Public Gloal Vars
+        '''Public Vars'''
         self.port = port
         self.baud = baud
         self.timeout = timeout
         self.uid = uid
         self.unit = unit
         self.logger = logger or logging.getLogger(__name__)
-        #Prvate Global Vars
+        '''Prvate Vars'''
         self._r = None
         self._data = None
         self._meter = None
-        
-    
-    #Properties (Getters/Setters) 
+
+    '''Properties (Getters/Setters'''
+    '''? @property decorator?'''
     '''
     def set_email(self, value)
         if '@' not in value:
@@ -38,29 +44,29 @@ class Meter(object):
 
     email = property(get_email, set_email)
     '''
-    
-    #Methods
+
+    '''Methods'''
     def __str__(self):
-        print "Meter: " + self.uid
+        return "Meter: " + self.uid
 
     def open(self):
         self._meter = serial.Serial(self.port, self.baud, timeout=self.timeout)
-        self._meter.open()  
+        self._meter.open()
 
     def read(self):
-                
+
         try:
             self._data = self._meter.readline()
-            
+
         except:
             pass
 
     def close(self):
         self._meter.close()
-		
-    def parse(self):       
+
+    def parse(self):
         try:
-	    #http://www.marcus-povey.co.uk - USED REGEX REGEX!
+            #http://www.marcus-povey.co.uk - USED REGEX REGEX!
             uidRegex = re.compile('<id>([0-9]+)</id>')
             valueRegex = re.compile('<watts>([0-9]+)</watts>')
             timeRegex = re.compile('<time>([0-9\.\:]+)</time>')
@@ -69,15 +75,13 @@ class Meter(object):
             self.uid = uidRegex.findall(self._data)[0]
             self.logger.info('Parsed data sucessfully!')
             self._r = Reading(self, value, time, self.logger)
-            
-        except Exception, e:
-            #raise MeterReadngExceptio("Could not get details from device")
+
+        except Exception:
             self.logger.error('Could not get details from device', exc_info=True)
 
     def submit(self):
         try:
             self._r.submit()
-        except Exception, e:
+        except Exception:
             self.logger.error('Reading not initialised', exc_info=True)
         self._r = None
-            
