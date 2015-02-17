@@ -12,7 +12,7 @@ import logging
 import logging.handlers
 from daemon import Daemon
 from meter import Meter
-
+from parser import * 
 
 class MeterDaemon(Daemon):
 
@@ -33,14 +33,14 @@ class MeterDaemon(Daemon):
         self.logger.info('Logging started...')
         self.logger.info('Pid is:' + pid)
         super(MeterDaemon, self).__init__(pid)
-
-    def run(self):
         self.m = Meter('/dev/ttyUSB0',
                        57600,
                        8,
                        'mastermeter',
                        'watts',
                        self.logger)
+
+    def run(self):
         self.m.open()
         self.logger.debug('Meter open.')
         while 1:

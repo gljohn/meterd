@@ -6,7 +6,7 @@ import logging
 
 class CurrentCost:
     ''' Class '''
-
+'''
     def __init__(self, data=None, logger=None):
         ''' Method '''
         self._data = data
@@ -14,7 +14,7 @@ class CurrentCost:
         self.time = None
         self.uid = None
         self.value = None
-
+'''
     def parse_data(self):
         ''' Method '''
 

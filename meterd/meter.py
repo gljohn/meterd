@@ -29,7 +29,8 @@ class Meter(object):
         '''Prvate Vars'''
         self._r = None
         self._data = None
-        self._meter = None
+        #self._meter = None
+        self._meter = serial.Serial(self.port, self.baud, timeout=self.timeout)
 
     '''Properties (Getters/Setters'''
     '''? @property decorator?'''
@@ -50,11 +51,9 @@ class Meter(object):
         return "Meter: " + self.uid
 
     def open(self):
-        self._meter = serial.Serial(self.port, self.baud, timeout=self.timeout)
         self._meter.open()
 
     def read(self):
-
         try:
             self._data = self._meter.readline()
 
@@ -63,25 +62,25 @@ class Meter(object):
 
     def close(self):
         self._meter.close()
-
+    
     def parse(self):
         try:
             #http://www.marcus-povey.co.uk - USED REGEX REGEX!
             uidRegex = re.compile('<id>([0-9]+)</id>')
             valueRegex = re.compile('<watts>([0-9]+)</watts>')
             timeRegex = re.compile('<time>([0-9\.\:]+)</time>')
-            value = str(int(wattsRegex.findall(self._data)[0]))
+            value = str(int(valueRegex.findall(self._data)[0]))
             time = timeRegex.findall(self._data)[0]
             self.uid = uidRegex.findall(self._data)[0]
             self.logger.info('Parsed data sucessfully!')
             self._r = Reading(self, value, time, self.logger)
 
         except Exception:
-            self.logger.error('Could not get details from device', exc_info=True)
-
+            self.logger.error('Could not get details from device')
+    
     def submit(self):
         try:
             self._r.submit()
         except Exception:
-            self.logger.error('Reading not initialised', exc_info=True)
+            self.logger.error('Reading not initialised')
         self._r = None

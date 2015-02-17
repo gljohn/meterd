@@ -4,16 +4,16 @@ except ImportError:
     from distutils.core import setup
 
 config = {
-    'description': 'My Project',
-    'author': 'My Name',
-    'url': 'URL to get it at.',
-    'download_url': 'Where to download it.',
-    'author_email': 'My email.',
+    'description': 'Meterd',
+    'author': 'Gareth John',
+    'url': 'https://github.com/gljohn/meterd',
+    'download_url': 'https://github.com/gljohn/meterd/archive/master.zip',
+    'author_email': 'gljohn@fedoraproject.org',
     'version': '0.1',
     'install_requires': ['nose'],
-    'packages': ['NAME'],
+    'packages': ['meterd'],
     'scripts': [],
-    'name': 'projectname'
+    'name': 'meterd'
 }
 
 setup(**config)
